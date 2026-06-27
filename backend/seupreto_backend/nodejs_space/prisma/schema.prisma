@@ -1,0 +1,57 @@
+generator client {
+    provider = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+    output = "/home/ubuntu/seupreto_backend/nodejs_space/node_modules/.prisma/client"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CLIENTE
+  BARBEIRO
+  ADMIN
+}
+
+enum StatusAgendamento {
+  PENDENTE
+  CONFIRMADO
+  CONCLUIDO
+  CANCELADO
+}
+
+model user {
+  id        String   @id @default(uuid())
+  nome      String
+  email     String   @unique
+  senha     String
+  role      Role     @default(CLIENTE)
+  telefone  String?
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  agendamentosComoCliente  agendamento[] @relation("ClienteAgendamentos")
+  agendamentosComoBarbeiro agendamento[] @relation("BarbeiroAgendamentos")
+
+  @@map("users")
+}
+
+model agendamento {
+  id          String              @id @default(uuid())
+  clienteId   String              @map("cliente_id")
+  barbeiroId  String              @map("barbeiro_id")
+  dataHora    DateTime            @map("data_hora")
+  servico     String
+  status      StatusAgendamento   @default(PENDENTE)
+  observacoes String?
+  createdAt   DateTime            @default(now()) @map("created_at")
+  updatedAt   DateTime            @updatedAt @map("updated_at")
+
+  cliente     user @relation("ClienteAgendamentos", fields: [clienteId], references: [id])
+  barbeiro    user @relation("BarbeiroAgendamentos", fields: [barbeiroId], references: [id])
+
+  @@map("agendamentos")
+}
