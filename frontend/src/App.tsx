@@ -50,7 +50,7 @@ function App() {
   const [agendamentos, setAgendamentos] = useState<any[]>([])
   const [loginUsuario, setLoginUsuario] = useState('')
   const [loginSenha, setLoginSenha] = useState('')
-  const [filtroStatus, setFiltroStatus] = useState('todos')
+  const [filtroStatus, setFiltroStatus] = useState('todos')// const [filtroStatus, setFiltroStatus] = useState('todos')
 
   const [modalRemarcar, setModalRemarcar] = useState<any>(null)
   const [novoHorario, setNovoHorario] = useState('')
@@ -88,7 +88,7 @@ function App() {
     buscarAgendamentos()
   }
 
-  async function excluirAgendamento(id: number) {
+  async function excluirAgendamento(id: number) {// async function excluirAgendamento(id: number) { ... }
     if (!confirm('Remover este agendamento?')) return
     await supabase.from('agendamentos').delete().eq('id', id)
     buscarAgendamentos()
